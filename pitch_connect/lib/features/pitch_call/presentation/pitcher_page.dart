@@ -32,7 +32,7 @@ class _PitcherPageState extends ConsumerState<PitcherPage> {
   }
 
   Future<void> _initTts() async {
-    await _tts.setLanguage("ko-KR");
+    await _tts.setLanguage('ko-KR');
     await _tts.setPitch(1.0);
     await _tts.setSpeechRate(0.5);
   }
@@ -64,10 +64,10 @@ class _PitcherPageState extends ConsumerState<PitcherPage> {
 
   void _speakCall(PitchCall call) {
     if (_isHeadphonesConnected) {
-      _tts.speak("${call.type.label}, ${call.location.label}");
+      _tts.speak('${call.type.label}, ${call.location.label}');
     } else {
       // 보안상 이어폰 미연결 시 스피커 출력 방지
-      debugPrint("보안 경고: 이어폰이 연결되지 않아 음성을 출력하지 않습니다.");
+      debugPrint('보안 경고: 이어폰이 연결되지 않아 음성을 출력하지 않습니다.');
     }
   }
 

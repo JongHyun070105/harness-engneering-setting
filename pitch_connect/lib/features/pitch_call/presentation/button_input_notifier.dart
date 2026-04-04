@@ -29,7 +29,7 @@ class ButtonInputNotifier extends Notifier<PitchCall> {
   }
 
   Future<void> _initTts() async {
-    await _tts.setLanguage("ko-KR");
+    await _tts.setLanguage('ko-KR');
     await _tts.setSpeechRate(0.8); // 약간 빠르게
     await _tts.setVolume(1.0);
   }
@@ -90,7 +90,7 @@ class ButtonInputNotifier extends Notifier<PitchCall> {
     _sendTimer?.cancel();
     _sendTimer = Timer(const Duration(seconds: 2), () {
       final call = state;
-      _speakFeedback("전송");
+      _speakFeedback('전송');
       ref.read(pitchCallProvider.notifier).sendCall(call);
     });
   }

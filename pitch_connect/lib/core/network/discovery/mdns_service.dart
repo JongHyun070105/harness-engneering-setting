@@ -23,25 +23,50 @@ class MdnsService {
   /// 서비스 탐색 시작 (투수)
   Future<Stream<Service>> startDiscoveryStream() async {
     final controller = StreamController<Service>();
+    final discoveredServices = <String>{};
+
     try {
       _discovery = await startDiscovery(serviceType);
       _discovery?.addListener(() {
         if (_discovery != null) {
           for (final service in _discovery!.services) {
-            controller.add(service);
+            final serviceKey = '${service.name}:${service.host}:${service.port}';
+            if (!discoveredServices.contains(serviceKey)) {
+              discoveredServices.add(serviceKey);
+              controller.add(service);
+            }
           }
         }
       });
     } catch (e) {
       debugPrint('mDNS Discovery Error: $e');
+      if (!controller.isClosed) controller.addError(e);
     }
+
+    controller.onCancel = () {
+      stopAll();
+      controller.close();
+    };
+
     return controller.stream;
   }
 
   /// 모든 정지
   Future<void> stopAll() async {
-    if (_registration != null) await unregister(_registration!);
-    if (_discovery != null) await stopDiscovery(_discovery!);
+    if (_registration != null) {
+      try {
+        await unregister(_registration!);
+      } catch (e) {
+        debugPrint('mDNS Unregistration Error: $e');
+      }
+    }
+    if (_discovery != null) {
+      try {
+        await stopDiscovery(_discovery!);
+      } catch (e) {
+        debugPrint('mDNS Stop Discovery Error: $e');
+      }
+    }
     _registration = null;
     _discovery = null;
   }

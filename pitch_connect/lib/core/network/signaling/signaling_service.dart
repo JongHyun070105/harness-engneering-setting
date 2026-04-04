@@ -23,10 +23,20 @@ class SignalingService {
       _channel = WebSocketChannel.connect(Uri.parse(serverUrl));
       _channel!.stream.listen(
         (dynamic message) {
-          final decoded = jsonDecode(message as String) as Map<String, dynamic>;
-          // 나 자신이 보낸 메시지는 무시 (에코 방지용)
-          if (decoded['role'] as String != role.name) {
-            onMessageReceived?.call(decoded['data'] as Map<String, dynamic>);
+          try {
+            if (message is! String) return;
+            final decoded = jsonDecode(message) as Map<String, dynamic>;
+            
+            // 나 자신이 보낸 메시지 무시
+            final dynamic msgRole = decoded['role'];
+            if (msgRole is String && msgRole != role.name) {
+              final data = decoded['data'] as Map<String, dynamic>?;
+              if (data != null) {
+                onMessageReceived?.call(data);
+              }
+            }
+          } catch (e) {
+            debugPrint('Signaling Decode Error: $e');
           }
         },
         onError: (Object e) => debugPrint('Signaling Error: $e'),
