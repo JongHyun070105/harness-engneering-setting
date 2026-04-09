@@ -40,30 +40,40 @@ class _CatcherPageState extends ConsumerState<CatcherPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('포수 (Catcher)')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            _ModeSelector(networkState: networkState, ref: ref),
-            const SizedBox(height: 16),
-            _RoomSetting(
-              controller: _roomController,
-              isLocked: networkState.isAdvertising,
-              onGenerate: _generateRandomRoom,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top - 48,
             ),
-            const SizedBox(height: 16),
-            _ConnectionStatus(networkState: networkState),
-            const SizedBox(height: 40),
-            _CurrentCallDisplay(call: currentCall),
-            const Spacer(),
-            _HardwareGuide(),
-            const Spacer(),
-            _ActionButtons(
-              networkState: networkState,
-              ref: ref,
-              roomId: _roomController.text,
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  _ModeSelector(networkState: networkState, ref: ref),
+                  const SizedBox(height: 16),
+                  _RoomSetting(
+                    controller: _roomController,
+                    isLocked: networkState.isAdvertising,
+                    onGenerate: _generateRandomRoom,
+                  ),
+                  const SizedBox(height: 16),
+                  _ConnectionStatus(networkState: networkState),
+                  const SizedBox(height: 40),
+                  _CurrentCallDisplay(call: currentCall),
+                  const Spacer(),
+                  _HardwareGuide(),
+                  const Spacer(),
+                  const SizedBox(height: 24),
+                  _ActionButtons(
+                    networkState: networkState,
+                    ref: ref,
+                    roomId: _roomController.text,
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );

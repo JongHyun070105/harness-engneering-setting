@@ -27,6 +27,7 @@ class NearbyConnector implements BaseConnector {
 
   /// 필수 권한 체크 (Nearby 전용)
   Future<bool> checkPermissions() async {
+    if (defaultTargetPlatform != TargetPlatform.android) return true;
     final status = await [
       Permission.location,
       Permission.bluetooth,
@@ -41,6 +42,7 @@ class NearbyConnector implements BaseConnector {
 
   @override
   Future<void> startAdvertising(String userName) async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
     if (!await checkPermissions()) return;
     try {
       final bool advertising = await Nearby().startAdvertising(
@@ -66,6 +68,7 @@ class NearbyConnector implements BaseConnector {
 
   @override
   Future<void> startDiscovery(String userName) async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
     if (!await checkPermissions()) return;
     try {
       final bool discovering = await Nearby().startDiscovery(
@@ -85,6 +88,7 @@ class NearbyConnector implements BaseConnector {
 
   @override
   Future<void> connectTo(String endpointId, String userName) async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
     try {
       await Nearby().requestConnection(
         userName,
@@ -107,15 +111,22 @@ class NearbyConnector implements BaseConnector {
 
   @override
   Future<void> send(Uint8List data) async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
     if (_connectedEndpointId == null) return;
     await Nearby().sendBytesPayload(_connectedEndpointId!, data);
   }
 
   @override
   Future<void> stopAll() async {
-    Nearby().stopAdvertising();
-    Nearby().stopDiscovery();
-    Nearby().stopAllEndpoints();
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      try {
+        Nearby().stopAdvertising();
+        Nearby().stopDiscovery();
+        Nearby().stopAllEndpoints();
+      } catch (e) {
+        debugPrint('Nearby Stop Error: $e');
+      }
+    }
     _connectedEndpointId = null;
     _isAdvertising = false;
     _isDiscovering = false;

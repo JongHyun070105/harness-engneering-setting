@@ -92,30 +92,42 @@ class _PitcherPageState extends ConsumerState<PitcherPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('투수 (Pitcher)')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            _ModeSelector(networkState: networkState, ref: ref),
-            const SizedBox(height: 16),
-            _ConnectionStatus(networkState: networkState),
-            const SizedBox(height: 16),
-            _RoomInput(controller: _roomController, isLocked: networkState.isAdvertising || networkState.isDiscovering),
-            const Spacer(),
-            if (lastCall != null)
-              _PitchCallHugeDisplay(call: lastCall)
-            else
-              const Text('사인 대기 중...', style: TextStyle(fontSize: 24, color: Colors.grey)),
-            const Spacer(),
-            if (networkState.connectedEndpointId == null)
-              _DiscoveryList(
-                networkState: networkState,
-                ref: ref,
-                roomId: _roomController.text,
-              )
-            else
-              _ConnectedView(endpointId: networkState.connectedEndpointId!),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top - 48,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  _ModeSelector(networkState: networkState, ref: ref),
+                  const SizedBox(height: 16),
+                  _ConnectionStatus(networkState: networkState),
+                  const SizedBox(height: 16),
+                  _RoomInput(controller: _roomController, isLocked: networkState.isAdvertising || networkState.isDiscovering),
+                  const SizedBox(height: 40),
+                  if (lastCall != null)
+                    _PitchCallHugeDisplay(call: lastCall)
+                  else
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 60),
+                      child: Text('사인 대기 중...', style: TextStyle(fontSize: 24, color: Colors.grey)),
+                    ),
+                  const Spacer(),
+                  if (networkState.connectedEndpointId == null)
+                    _DiscoveryList(
+                      networkState: networkState,
+                      ref: ref,
+                      roomId: _roomController.text,
+                    )
+                  else
+                    _ConnectedView(endpointId: networkState.connectedEndpointId!),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -290,20 +302,56 @@ class _RoomInput extends StatelessWidget {
         children: [
           const Text('포수가 알려준 보안 코드 입력', style: TextStyle(fontSize: 14, color: Colors.grey)),
           const SizedBox(height: 8),
-          TextField(
-            controller: controller,
-            enabled: !isLocked,
-            decoration: const InputDecoration(
-              hintText: '예: 1234',
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12),
-              hintStyle: TextStyle(color: Colors.white24),
-            ),
-            keyboardType: TextInputType.number,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  enabled: !isLocked,
+                  decoration: const InputDecoration(
+                    hintText: '예: 1234',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                    hintStyle: TextStyle(color: Colors.white24),
+                  ),
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  onSubmitted: (_) {
+                    if (!isLocked) {
+                      _startConnection(context, controller.text);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  onPressed: isLocked ? null : () => _startConnection(context, controller.text),
+                  child: const Text('연결', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
+  }
+
+  void _startConnection(BuildContext context, String roomId) {
+    if (roomId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('보안 코드를 입력해주세요.')),
+      );
+      return;
+    }
+    
+    final container = ProviderScope.containerOf(context);
+    container.read(networkManagerProvider.notifier).startDiscovery('Pitcher_User', roomId: roomId);
   }
 }

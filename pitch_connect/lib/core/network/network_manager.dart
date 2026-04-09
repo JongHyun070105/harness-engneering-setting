@@ -169,8 +169,12 @@ class NetworkManager extends Notifier<NetworkState> {
 
   /// 모든 중지 및 초기화
   void stopAll() {
-    _connector?.stopAll();
-    _mdnsService.stopAll();
+    try {
+      _connector?.stopAll();
+      _mdnsService.stopAll();
+    } catch (e) {
+      debugPrint('Network Stop Error: $e');
+    }
     state = NetworkState(mode: state.mode);
   }
 }

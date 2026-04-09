@@ -11,6 +11,8 @@ class SignalingService {
   final SignalingRole role;
   
   void Function(Map<String, dynamic>)? onMessageReceived;
+  bool _isDisposed = false;
+  bool _isConnecting = false;
 
   SignalingService({
     required this.serverUrl,
@@ -19,8 +21,15 @@ class SignalingService {
   });
 
   Future<void> connect() async {
+    if (_isDisposed || _isConnecting) return;
+    _isConnecting = true;
+    
+    debugPrint('Signaling Connecting to $serverUrl (Room: $roomId, Role: ${role.name})');
+    
     try {
       _channel = WebSocketChannel.connect(Uri.parse(serverUrl));
+      _isConnecting = false;
+      
       _channel!.stream.listen(
         (dynamic message) {
           try {
@@ -39,16 +48,31 @@ class SignalingService {
             debugPrint('Signaling Decode Error: $e');
           }
         },
-        onError: (Object e) => debugPrint('Signaling Error: $e'),
-        onDone: () => debugPrint('Signaling Disconnected'),
+        onError: (Object e) {
+          debugPrint('Signaling Error: $e');
+          _reconnect();
+        },
+        onDone: () {
+          debugPrint('Signaling Disconnected');
+          _reconnect();
+        },
       );
     } catch (e) {
+      _isConnecting = false;
       debugPrint('Signaling Connection Failed: $e');
+      _reconnect();
     }
   }
 
+  void _reconnect() {
+    if (_isDisposed) return;
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!_isDisposed) connect();
+    });
+  }
+
   void sendMessage(Map<String, dynamic> data) {
-    if (_channel == null) return;
+    if (_channel == null || _isDisposed) return;
     
     final payload = {
       'type': 'signaling',
@@ -57,10 +81,15 @@ class SignalingService {
       'data': data,
     };
     
-    _channel!.sink.add(jsonEncode(payload));
+    try {
+      _channel!.sink.add(jsonEncode(payload));
+    } catch (e) {
+      debugPrint('Signaling Send Error: $e');
+    }
   }
 
   void dispose() {
+    _isDisposed = true;
     _channel?.sink.close();
   }
 }
