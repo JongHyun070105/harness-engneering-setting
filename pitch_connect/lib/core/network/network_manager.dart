@@ -93,7 +93,16 @@ class NetworkManager extends Notifier<NetworkState> {
         _connector = SocketConnector();
         break;
       case ConnectivityMode.webrtc:
-        _connector = WebRTCConnector();
+        final webrtcConnector = WebRTCConnector();
+        // WebRTC 연결 상태 변화를 받아 Riverpod state에 즉시 반영
+        webrtcConnector.onConnectionChanged = (endpointId) {
+          state = state.copyWith(
+            connectedEndpointId: endpointId,
+            isAdvertising: endpointId != null ? false : state.isAdvertising,
+            isDiscovering: endpointId != null ? false : state.isDiscovering,
+          );
+        };
+        _connector = webrtcConnector;
         break;
     }
 
