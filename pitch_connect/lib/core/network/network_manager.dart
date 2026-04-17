@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nsd/nsd.dart';
@@ -165,6 +164,7 @@ class NetworkManager extends Notifier<NetworkState> {
 
   /// 연결 요청
   Future<void> connectTo(String endpointId, String userName) async {
+    await _connector?.connectTo(endpointId, userName);
     state = state.copyWith(
       connectedEndpointId: _connector?.connectedEndpointId,
       isDiscovering: false,
