@@ -13,7 +13,7 @@
         android:name="android.permission.NEARBY_WIFI_DEVICES"
         android:usesPermissionFlags="neverForLocation" />
     <application
-        android:label="pitch_connect"
+        android:label="PitchConnect"
         android:name=".MainApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
