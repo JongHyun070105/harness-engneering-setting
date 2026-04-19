@@ -72,7 +72,7 @@ class ButtonInputNotifier extends Notifier<PitchCall> {
       location: state.location,
       intensity: state.intensity,
     );
-    _speakFeedback(nextType.name);
+    _speakFeedback(nextType.label);
   }
 
   void _rotatePitchLocation() {
@@ -83,7 +83,7 @@ class ButtonInputNotifier extends Notifier<PitchCall> {
       location: nextLocation,
       intensity: state.intensity,
     );
-    _speakFeedback(nextLocation.name);
+    _speakFeedback(nextLocation.label);
   }
 
   void _restartSendTimer() {
