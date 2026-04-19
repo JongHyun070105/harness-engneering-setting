@@ -264,18 +264,18 @@ class _DiscoveryList extends StatelessWidget {
   }
 }
 
-class _ConnectedView extends StatelessWidget {
+class _ConnectedView extends ConsumerWidget {
   final String endpointId;
   const _ConnectedView({required this.endpointId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         const Text('정상 연결 중입니다. 이어폰을 확인하세요.', textAlign: TextAlign.center),
         const SizedBox(height: 12),
         TextButton(
-          onPressed: () => ProviderScope.containerOf(context).read(networkManagerProvider.notifier).stopAll(),
+          onPressed: () => ref.read(networkManagerProvider.notifier).stopAll(),
           child: const Text('연결 끊기', style: TextStyle(color: Colors.redAccent)),
         ),
       ],
@@ -283,14 +283,14 @@ class _ConnectedView extends StatelessWidget {
   }
 }
 
-class _RoomInput extends StatelessWidget {
+class _RoomInput extends ConsumerWidget {
   final TextEditingController controller;
   final bool isLocked;
 
   const _RoomInput({required this.controller, required this.isLocked});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -318,7 +318,7 @@ class _RoomInput extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                   onSubmitted: (_) {
                     if (!isLocked) {
-                      _startConnection(context, controller.text);
+                      _startConnection(context, ref, controller.text);
                     }
                   },
                 ),
@@ -332,7 +332,7 @@ class _RoomInput extends StatelessWidget {
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  onPressed: isLocked ? null : () => _startConnection(context, controller.text),
+                  onPressed: isLocked ? null : () => _startConnection(context, ref, controller.text),
                   child: const Text('연결', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
@@ -343,7 +343,7 @@ class _RoomInput extends StatelessWidget {
     );
   }
 
-  void _startConnection(BuildContext context, String roomId) {
+  void _startConnection(BuildContext context, WidgetRef ref, String roomId) {
     if (roomId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('보안 코드를 입력해주세요.')),
@@ -351,7 +351,6 @@ class _RoomInput extends StatelessWidget {
       return;
     }
     
-    final container = ProviderScope.containerOf(context);
-    container.read(networkManagerProvider.notifier).startDiscovery('Pitcher_User', roomId: roomId);
+    ref.read(networkManagerProvider.notifier).startDiscovery('Pitcher_User', roomId: roomId);
   }
 }
