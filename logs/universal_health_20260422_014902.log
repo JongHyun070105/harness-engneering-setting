@@ -1,0 +1,55 @@
+🚀 Universal Harness Health Check 시작: /Users/macintosh/IdeaProjects/reviewai_flutter
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1️⃣  [Frontend] Flutter/Dart 검증 중...
+   ❌ [분석 실패] Dart 분석기에 경고/에러가 있습니다.
+   ❌ [포맷팅 위반] Dart 포맷 규칙을 준수하지 않았습니다.
+🔍 아키텍처 검증 시작: /Users/macintosh/IdeaProjects/reviewai_flutter
+
+━━━ 검증 1: domain → data/presentation import 금지 ━━━
+✅ 통과
+✅ 통과
+
+━━━ 검증 2: presentation → data 직접 import 금지 ━━━
+✅ 통과
+
+━━━ 검증 3: feature 간 직접 import 금지 ━━━
+✅ 통과 (또는 features 디렉토리 없음)
+
+━━━ 검증 4: print() 사용 금지 (debugPrint 사용) ━━━
+✅ 통과
+
+━━━ 검증 5: 하드코딩된 시크릿 검사 ━━━
+✅ 통과
+
+━━━ 검증 6: AI Slop 탐지 (단일 파일 300줄 이하) ━━━
+❌ 파일이 너무 깁니다 (분리 필요):
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/config/theme.dart (324 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/screens/review_selection_screen.dart (588 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/screens/history_screen.dart (434 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/screens/review_screen.dart (498 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/screens/today_recommendation_screen.dart (663 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/screens/restaurant_search_screen.dart (755 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/widgets/notification_settings_sheet.dart (388 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/widgets/history/food_insight_card.dart (425 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/presentation/widgets/history/dialogs/food_recommendation_dialog.dart (425 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/services/food_insight_service.dart (553 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/services/kakao_api_service.dart (348 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/services/recommendation_service.dart (375 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/services/api_proxy_service.dart (327 lines)
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/services/user_preference_service.dart (333 lines)
+
+━━━ 검증 7: 이름 없는 TODO 탐지 ━━━
+❌ 이름 없는 TODO 발견 (// TODO(이름): 형식 준수):
+/Users/macintosh/IdeaProjects/reviewai_flutter/lib/config/security_config.dart:182:    // TODO: 보안 해제 우회 (에뮬레이터 기능 베포 전에 복귀)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❌ 아키텍처 위반 2건 발견!
+
+2️⃣  [Backend] Cloudflare Worker 검증 중...
+   ❌ [보안 위반] worker.js 내에 하드코딩된 시크릿 의심 패턴이 발견되었습니다.
+
+3️⃣  [Infra] 프로젝트 루트 및 공통 인프라 검증 중...
+   ✅ [인프라 통과] 필수 설정 파일이 존재합니다.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚨 Health Check 실패: 총 4개의 위반 발견 ( Frontend(Analyze) Frontend(Format) Frontend(Architecture/Slop) Backend(Security))

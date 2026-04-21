@@ -1,0 +1,53 @@
+🚀 Harness Health Check 시작: .
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1️⃣  Dart Analyze 실행 중...
+❌ [분석 실패] 'dart analyze' 결과 에러가 있습니다.
+
+2️⃣  포맷팅 확인 중...
+❌ [포맷팅 위반] 'dart format'이 권장하는 포맷이 아닙니다.
+
+3️⃣  아키텍처 및 Slop 검증 중...
+🔍 아키텍처 검증 시작: .
+
+━━━ 검증 1: domain → data/presentation import 금지 ━━━
+✅ 통과
+✅ 통과
+
+━━━ 검증 2: presentation → data 직접 import 금지 ━━━
+✅ 통과
+
+━━━ 검증 3: feature 간 직접 import 금지 ━━━
+✅ 통과 (또는 features 디렉토리 없음)
+
+━━━ 검증 4: print() 사용 금지 (debugPrint 사용) ━━━
+✅ 통과
+
+━━━ 검증 5: 하드코딩된 시크릿 검사 ━━━
+✅ 통과
+
+━━━ 검증 6: AI Slop 탐지 (단일 파일 300줄 이하) ━━━
+❌ 파일이 너무 깁니다 (분리 필요):
+./lib/config/theme.dart (324 lines)
+./lib/presentation/screens/review_selection_screen.dart (588 lines)
+./lib/presentation/screens/history_screen.dart (434 lines)
+./lib/presentation/screens/review_screen.dart (498 lines)
+./lib/presentation/screens/today_recommendation_screen.dart (663 lines)
+./lib/presentation/screens/restaurant_search_screen.dart (755 lines)
+./lib/presentation/widgets/notification_settings_sheet.dart (388 lines)
+./lib/presentation/widgets/history/food_insight_card.dart (425 lines)
+./lib/presentation/widgets/history/dialogs/food_recommendation_dialog.dart (425 lines)
+./lib/services/food_insight_service.dart (553 lines)
+./lib/services/kakao_api_service.dart (348 lines)
+./lib/services/recommendation_service.dart (375 lines)
+./lib/services/api_proxy_service.dart (327 lines)
+./lib/services/user_preference_service.dart (333 lines)
+
+━━━ 검증 7: 이름 없는 TODO 탐지 ━━━
+✅ 통과
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❌ 아키텍처 위반 1건 발견!
+❌ [구조 위반] 아키텍처 규칙 또는 AI Slop이 발견되었습니다.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚨 Harness Health Check 실패: 총 3개의 영역에서 위반 발견

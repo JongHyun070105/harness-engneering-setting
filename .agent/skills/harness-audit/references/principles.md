@@ -1,3 +1,6 @@
+---
+name: 하네스 감사 원칙
+---
 # Harness 12 Principles — Flutter/Antigravity 맞춤
 
 ---
